@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Descargar Video</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        body {
+            background-color: #eee;
+            font-family: 'helvetica neue', helvetica, arial, sans-serif;
+            color: #222;
+            height: 100%;
+            width: 100%;
+        }
+
+        #form {
+            max-width: 700px;
+            height: 300px;
+            padding: 2rem;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .form-field {
+            display: flex;
+            margin: 0 0 1rem 0;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        label, input {
+            width: 70%;
+            padding: 0.5rem;
+            box-sizing: border-box;
+            justify-content: space-between;
+            font-size: 1.1rem;
+        }
+
+        label {
+            text-align: center;
+            width: 30%;
+        }
+
+        input {
+            border: 2px solid #aaa;
+            border-radius: 2px;
+            max-height: 70px;
+        }
+
+        button {
+            width: 70%;
+            padding: 0.5rem;
+            box-sizing: border-box;
+            justify-content: space-between;
+            font-size: 1.1rem;
+            border: 2px solid #aaa;
+            border-radius: 2px;
+            max-height: 70px;
+        }
+
+        #result {
+            transition: 1s all;
+            text-align: center;
+        }
+
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        .loader-div {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: rgba(40, 40, 40, .4);
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader {
+            position: relative;
+            width: 10vw;
+            height: 5vw;
+            padding: 1.5vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader span {
+            position: absolute;
+            height: 0.8vw;
+            width: 0.8vw;
+            border-radius: 50%;
+            background-color: #ff0;
+        }
+
+        .loader span:nth-child(1) {
+            animation: loading-dotsA 0.5s infinite linear;
+        }
+
+        .loader span:nth-child(2) {
+            animation: loading-dotsB 0.5s infinite linear;
+        }
+
+        @keyframes loading-dotsA {
+            0% {
+                transform: none;
+            }
+            25% {
+                transform: translateX(2vw);
+            }
+            50% {
+                transform: none;
+            }
+            75% {
+                transform: translateY(2vw);
+            }
+            100% {
+                transform: none;
+            }
+        }
+
+        @keyframes loading-dotsB {
+            0% {
+                transform: none;
+            }
+            25% {
+                transform: translateX(-2vw);
+            }
+            50% {
+                transform: none;
+            }
+            75% {
+                transform: translateY(-2vw);
+            }
+            100% {
+                transform: none;
+            }
+        }
+
+
+    </style>
+</head>
+<body style="display: flex; justify-content: center; align-items: center">
+<div class="loader-div" id="loader" style="display: none">
+  <span class="loader">
+    <span></span>
+    <span></span>
+  </span>
+</div>
+<form method="get" action="/download-video/" id="form" class="validate">
+    <div class="form-field">
+        <label for="url">Url video</label>
+        <input type="text" name="full-name" id="url" placeholder="https://youtube.com" required/>
+    </div>
+    <div class="form-field">
+        <button id="sub">
+            Obtener url descargable
+        </button>
+    </div>
+    <p style="display: none" id="result"><a target="_blank" download="" href=""></a></p>
+</form>
+<script>
+    const submit = document.getElementById("sub")
+    const loader = document.getElementById("loader")
+    const url = document.getElementById("url")
+    const result = document.getElementById("result")
+    const link = result.querySelector("a")
+    link.addEventListener("click", () => {
+        link.textContent = "";
+        result.style.display = "none";
+        url.value = ""
+    })
+    submit.addEventListener("click", (e) => {
+        e.preventDefault()
+        loader.style.display = "";
+        fetch("/download-video/?url=" + url.value)
+            .then(resp => resp.json())
+            .then((resp) => {
+                loader.style.display = "none";
+                console.log(resp)
+                link.href = resp.url
+                link.textContent = "Descargar archivo"
+                result.style.display = ""
+            })
+            .catch((err) => {
+                loader.style.display = "none";
+                console.log(err);
+            });
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+.idea/
+server/dump/
+myenv/
+*/__pycache__/
